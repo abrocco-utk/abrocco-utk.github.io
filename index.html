@@ -919,6 +919,7 @@
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#business">Business</a></li>
     <li><a href="#why">Why Now</a></li>
+    <li><a href="#demo" style="color:var(--accent)">Live Demo</a></li>
   </ul>
   <button class="nav-cta">Request Access</button>
 </nav>
@@ -1320,6 +1321,513 @@
     </table>
   </div>
 </section>
+
+<!-- DEMO SECTION -->
+<section id="demo" style="background:var(--black);padding:140px 80px;position:relative;overflow:hidden;">
+
+  <!-- subtle grid bg -->
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(244,242,238,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(244,242,238,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;"></div>
+
+  <div class="section-tag">Interactive Demo</div>
+  <h2 class="section-headline reveal">Watch AXON execute<br>a real-world task.</h2>
+  <p class="section-sub reveal" style="margin-bottom:64px;">Select a scenario, configure the agent, and run. Watch every layer activate in real time — identity verification, web execution, compliance checks, and audit sealing.</p>
+
+  <!-- DEMO APP CONTAINER -->
+  <div class="reveal" style="border:1px solid var(--border-light);border-radius:4px;overflow:hidden;background:var(--surface);position:relative;">
+
+    <!-- Demo top bar -->
+    <div style="background:#0a0a09;border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);">AXON Console</span>
+        <span style="font-size:11px;color:var(--dim);letter-spacing:0.05em;">v2.4.1 · Sandbox Environment</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="demo-status-dot" style="width:8px;height:8px;border-radius:50%;background:#444;transition:background 0.3s;"></span>
+        <span id="demo-status-label" style="font-size:11px;color:var(--dim);letter-spacing:0.05em;">Idle</span>
+      </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div style="display:grid;grid-template-columns:320px 1fr;min-height:600px;">
+
+      <!-- LEFT: Config panel -->
+      <div style="border-right:1px solid var(--border);padding:32px 28px;display:flex;flex-direction:column;gap:28px;">
+
+        <!-- Scenario picker -->
+        <div>
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:12px;">Scenario</label>
+          <div id="scenario-list" style="display:flex;flex-direction:column;gap:6px;">
+            <div class="demo-scenario active" data-id="0" onclick="selectScenario(0)">
+              <div class="demo-scenario-title">Procurement RFP</div>
+              <div class="demo-scenario-desc">Contact 4 vendors, collect quotes, select best offer</div>
+            </div>
+            <div class="demo-scenario" data-id="1" onclick="selectScenario(1)">
+              <div class="demo-scenario-title">Contract Execution</div>
+              <div class="demo-scenario-desc">Negotiate terms, route for e-signature, confirm payment</div>
+            </div>
+            <div class="demo-scenario" data-id="2" onclick="selectScenario(2)">
+              <div class="demo-scenario-title">Vendor Onboarding</div>
+              <div class="demo-scenario-desc">Register supplier, verify docs, set up payment rails</div>
+            </div>
+            <div class="demo-scenario" data-id="3" onclick="selectScenario(3)">
+              <div class="demo-scenario-title">Invoice Reconciliation</div>
+              <div class="demo-scenario-desc">Match POs, flag discrepancies, approve payments</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent identity -->
+        <div>
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:12px;">Agent Identity</label>
+          <div style="background:var(--black);border:1px solid var(--border);border-radius:2px;padding:14px 16px;">
+            <div style="font-size:12px;color:var(--dim);margin-bottom:4px;">Principal</div>
+            <div style="font-size:14px;color:var(--white);font-weight:400;margin-bottom:12px;">Acme Corp · Procurement Dept</div>
+            <div style="font-size:12px;color:var(--dim);margin-bottom:4px;">Token</div>
+            <div style="font-family:monospace;font-size:11px;color:var(--accent);word-break:break-all;">axn_live_8f3c2d...e9a1</div>
+          </div>
+        </div>
+
+        <!-- Permissions -->
+        <div>
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:12px;">Scope Permissions</label>
+          <div style="display:flex;flex-direction:column;gap:8px;" id="perm-list">
+            <label class="demo-perm"><input type="checkbox" checked disabled> <span>Read vendor portals</span></label>
+            <label class="demo-perm"><input type="checkbox" checked> <span>Submit forms</span></label>
+            <label class="demo-perm"><input type="checkbox" checked> <span>Execute payments &lt; $50K</span></label>
+            <label class="demo-perm"><input type="checkbox" checked> <span>Generate audit log</span></label>
+            <label class="demo-perm"><input type="checkbox"> <span>Send external emails</span></label>
+            <label class="demo-perm"><input type="checkbox"> <span>Modify contracts</span></label>
+          </div>
+        </div>
+
+        <!-- Run button -->
+        <button id="run-btn" onclick="runDemo()" style="margin-top:auto;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:var(--accent);color:var(--black);padding:14px 0;border:none;border-radius:2px;cursor:pointer;transition:all 0.2s;width:100%;">
+          ▶ &nbsp;Run Agent
+        </button>
+        <button id="reset-btn" onclick="resetDemo()" style="display:none;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:none;color:var(--dim);padding:10px 0;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all 0.2s;width:100%;">
+          ↺ &nbsp;Reset
+        </button>
+
+      </div>
+
+      <!-- RIGHT: Execution view -->
+      <div style="display:flex;flex-direction:column;">
+
+        <!-- Pipeline bar -->
+        <div style="border-bottom:1px solid var(--border);padding:20px 28px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;">Execution Pipeline</div>
+          <div style="display:flex;align-items:center;gap:0;">
+            <div class="pipe-stage" id="pipe-0">
+              <div class="pipe-dot"></div>
+              <div class="pipe-label">Identity</div>
+            </div>
+            <div class="pipe-line" id="pline-0"></div>
+            <div class="pipe-stage" id="pipe-1">
+              <div class="pipe-dot"></div>
+              <div class="pipe-label">Scope</div>
+            </div>
+            <div class="pipe-line" id="pline-1"></div>
+            <div class="pipe-stage" id="pipe-2">
+              <div class="pipe-dot"></div>
+              <div class="pipe-label">Execute</div>
+            </div>
+            <div class="pipe-line" id="pline-2"></div>
+            <div class="pipe-stage" id="pipe-3">
+              <div class="pipe-dot"></div>
+              <div class="pipe-label">Compliance</div>
+            </div>
+            <div class="pipe-line" id="pline-3"></div>
+            <div class="pipe-stage" id="pipe-4">
+              <div class="pipe-dot"></div>
+              <div class="pipe-label">Audit Seal</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live log -->
+        <div style="flex:1;padding:24px 28px;overflow-y:auto;max-height:340px;" id="demo-log">
+          <div style="font-size:13px;color:var(--dim);font-style:italic;">Select a scenario and press Run Agent to begin execution...</div>
+        </div>
+
+        <!-- Result card (hidden until done) -->
+        <div id="result-card" style="display:none;border-top:1px solid var(--border);padding:24px 28px;background:rgba(200,255,0,0.03);">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">✓ &nbsp;Task Complete · Audit Sealed</div>
+          <div id="result-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;"></div>
+          <div style="font-family:monospace;font-size:11px;color:var(--dim);background:var(--black);border:1px solid var(--border);border-radius:2px;padding:12px 14px;">
+            <span style="color:#555;">Audit hash: </span><span id="audit-hash" style="color:var(--accent);"></span>
+            &nbsp;·&nbsp;
+            <span style="color:#555;">Signed: </span><span style="color:var(--white);" id="audit-time"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Demo-specific styles */
+.demo-scenario {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.demo-scenario:hover { border-color: var(--border-light); background: var(--surface2); }
+.demo-scenario.active { border-color: var(--accent); background: rgba(200,255,0,0.04); }
+.demo-scenario-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 3px;
+}
+.demo-scenario.active .demo-scenario-title { color: var(--accent); }
+.demo-scenario-desc { font-size: 12px; color: var(--dim); font-weight: 300; }
+
+.demo-perm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--dim);
+  cursor: pointer;
+  font-weight: 300;
+}
+.demo-perm input[type=checkbox] {
+  accent-color: var(--accent);
+  width: 14px; height: 14px;
+  cursor: pointer;
+}
+.demo-perm span { transition: color 0.2s; }
+.demo-perm:hover span { color: var(--white); }
+
+/* Pipeline */
+.pipe-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 70px;
+}
+.pipe-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #222;
+  border: 1px solid #444;
+  transition: all 0.4s;
+}
+.pipe-stage.active .pipe-dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px rgba(200,255,0,0.5); }
+.pipe-stage.done .pipe-dot { background: rgba(200,255,0,0.3); border-color: var(--accent); }
+.pipe-stage.running .pipe-dot { background: var(--accent); border-color: var(--accent); animation: pipePulse 0.7s ease-in-out infinite; }
+@keyframes pipePulse { 0%,100%{box-shadow:0 0 6px rgba(200,255,0,0.4)} 50%{box-shadow:0 0 18px rgba(200,255,0,0.9)} }
+.pipe-label { font-size: 10px; color: var(--dim); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.pipe-stage.active .pipe-label, .pipe-stage.running .pipe-label { color: var(--accent); }
+.pipe-stage.done .pipe-label { color: rgba(200,255,0,0.6); }
+
+.pipe-line {
+  flex: 1;
+  height: 1px;
+  background: #333;
+  margin-bottom: 18px;
+  transition: background 0.6s;
+  position: relative;
+  overflow: hidden;
+}
+.pipe-line.lit { background: var(--accent); }
+.pipe-line::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  transition: none;
+}
+.pipe-line.scanning::after { animation: scanLine 0.6s ease forwards; }
+@keyframes scanLine { from{left:-100%} to{left:100%} }
+
+/* Log lines */
+.log-line {
+  font-family: 'DM Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  line-height: 2;
+  display: flex;
+  gap: 10px;
+  animation: logIn 0.2s ease forwards;
+  opacity: 0;
+}
+@keyframes logIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+.log-time { color: #444; min-width: 52px; }
+.log-layer { min-width: 80px; }
+.log-layer.id { color: #60a5fa; }
+.log-layer.scope { color: #a78bfa; }
+.log-layer.exec { color: #fb923c; }
+.log-layer.comp { color: #34d399; }
+.log-layer.audit { color: var(--accent); }
+.log-msg { color: #b0aca4; flex: 1; }
+.log-ok { color: var(--accent); font-weight: 700; }
+.log-warn { color: #fb923c; }
+.log-info { color: #60a5fa; }
+
+/* Result stat mini cards */
+.result-stat {
+  background: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px 14px;
+}
+.result-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.result-stat-num span { color: var(--accent); }
+.result-stat-label { font-size: 11px; color: var(--dim); }
+</style>
+
+<script>
+// ── Scenario data ──────────────────────────────────────────────
+const SCENARIOS = [
+  {
+    name: "Procurement RFP",
+    steps: [
+      { layer:"id",    label:"IDENTITY",    msg:"Verifying agent token axn_live_8f3c2d...",         delay:400 },
+      { layer:"id",    label:"IDENTITY",    msg:"Principal validated → Acme Corp · Procurement",    delay:700 },
+      { layer:"scope", label:"SCOPE",       msg:"Checking delegation scope for task type: rfp",     delay:1100 },
+      { layer:"scope", label:"SCOPE",       msg:"Permission granted: submit_forms, read_portals",   delay:1400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Loading vendor portal: SupplyBase.io (no API)...", delay:1900 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Navigating to RFP submission form...",             delay:2400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Populating fields: quantity=500, delivery=30d",    delay:2900 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Submitted RFP to vendor #1 → GlobalParts Ltd",    delay:3400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Submitted RFP to vendor #2 → FastSupply Inc",     delay:3900 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Submitted RFP to vendor #3 → TechSource EU",      delay:4300 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Extracting quotes from 3 vendor responses...",    delay:5200 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Best offer: FastSupply Inc · $42,800 · 18d",      delay:5800, highlight:true },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"ToS scan: all 3 portals permit automation ✓",     delay:6300 },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"PII check: no personal data in submission ✓",     delay:6700 },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"Payment amount $42,800 < $50K scope limit ✓",     delay:7100 },
+      { layer:"audit", label:"AUDIT",       msg:"Sealing action log · 9 events · SHA-256...",       delay:7600 },
+      { layer:"audit", label:"AUDIT",       msg:"Audit hash: a3f92c19d8e7...44d · Immutable",      delay:8000, final:true },
+    ],
+    result: { actions:9, time:"8.3s", saved:"4.2h", cost:"$0.74",
+      hash:"a3f92c19d8e744d...c2b1", pipeStages:[0,1,2,3,4] }
+  },
+  {
+    name: "Contract Execution",
+    steps: [
+      { layer:"id",    label:"IDENTITY",    msg:"Verifying agent token axn_live_8f3c2d...",           delay:400 },
+      { layer:"id",    label:"IDENTITY",    msg:"Principal validated → Acme Corp · Legal Dept",       delay:700 },
+      { layer:"scope", label:"SCOPE",       msg:"Checking delegation scope for task type: contract",  delay:1100 },
+      { layer:"scope", label:"SCOPE",       msg:"Permission granted: read_contracts, submit_forms",   delay:1400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Loading contract platform: DocuSign API...",         delay:1800 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Retrieving draft: MSA-2025-0047.pdf",               delay:2300 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Flagging 2 non-standard clauses for review...",     delay:2800, warn:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"Clause 8.3 auto-resolved against template v4",      delay:3300 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Clause 12.1 escalated → awaiting human review",     delay:3700, warn:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"Routing finalized contract to signatories...",       delay:4400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"E-signature collected: J. Martinez (Acme) ✓",       delay:5100, highlight:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"E-signature collected: R. Chen (Vendor) ✓",         delay:5600, highlight:true },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"Contract binding check: jurisdiction NY ✓",         delay:6200 },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"Financial obligation $128,000 flagged for CFO",      delay:6600, warn:true },
+      { layer:"audit", label:"AUDIT",       msg:"Sealing contract execution log · 11 events...",      delay:7200 },
+      { layer:"audit", label:"AUDIT",       msg:"Audit hash: b9c14a72ff03...e8d2 · Immutable",       delay:7700, final:true },
+    ],
+    result: { actions:11, time:"7.7s", saved:"6.1h", cost:"$0.91",
+      hash:"b9c14a72ff03e8d2...a1c0", pipeStages:[0,1,2,3,4] }
+  },
+  {
+    name: "Vendor Onboarding",
+    steps: [
+      { layer:"id",    label:"IDENTITY",    msg:"Verifying agent token axn_live_8f3c2d...",           delay:400 },
+      { layer:"id",    label:"IDENTITY",    msg:"Principal validated → Acme Corp · Finance Dept",     delay:700 },
+      { layer:"scope", label:"SCOPE",       msg:"Scope check: vendor_register, payment_setup",        delay:1100 },
+      { layer:"scope", label:"SCOPE",       msg:"All permissions granted ✓",                          delay:1400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Opening vendor portal: Coupa Supplier Network",      delay:1900 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Submitting company registration: NovaTech GmbH",     delay:2500 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Uploading W-8BEN tax form (3 pages)...",             delay:3000 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Uploading insurance certificate...",                 delay:3500 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Verifying bank details via micro-deposit...",        delay:4200 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Micro-deposit confirmed: $0.14 → $0.23",             delay:5000, highlight:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"Payment rails established: ACH · EUR",               delay:5600, highlight:true },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"OFAC sanctions screening: PASS ✓",                  delay:6200 },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"KYB verification: registered entity confirmed ✓",    delay:6700 },
+      { layer:"audit", label:"AUDIT",       msg:"Sealing onboarding log · 10 events...",              delay:7300 },
+      { layer:"audit", label:"AUDIT",       msg:"Audit hash: c7e28b41aa91...f3e5 · Immutable",        delay:7800, final:true },
+    ],
+    result: { actions:10, time:"7.8s", saved:"5.5h", cost:"$0.83",
+      hash:"c7e28b41aa91f3e5...d9b2", pipeStages:[0,1,2,3,4] }
+  },
+  {
+    name: "Invoice Reconciliation",
+    steps: [
+      { layer:"id",    label:"IDENTITY",    msg:"Verifying agent token axn_live_8f3c2d...",           delay:400 },
+      { layer:"id",    label:"IDENTITY",    msg:"Principal validated → Acme Corp · AP Team",          delay:700 },
+      { layer:"scope", label:"SCOPE",       msg:"Scope check: read_invoices, approve_payments",       delay:1100 },
+      { layer:"scope", label:"SCOPE",       msg:"Permissions validated ✓",                            delay:1400 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Fetching 14 open invoices from ERP (SAP)...",        delay:1900 },
+      { layer:"exec",  label:"EXECUTE",     msg:"Matching against 14 purchase orders...",             delay:2500 },
+      { layer:"exec",  label:"EXECUTE",     msg:"12 of 14 invoices matched cleanly ✓",               delay:3100, highlight:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"Invoice #INV-2441: $400 discrepancy flagged",        delay:3700, warn:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"Invoice #INV-2448: duplicate detected, blocked",     delay:4200, warn:true },
+      { layer:"exec",  label:"EXECUTE",     msg:"Submitting 12 approved payments · total $284,200",   delay:5000, highlight:true },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"Payment limit check: largest invoice $48,200 ✓",    delay:5700 },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"Duplicate prevention log updated ✓",                delay:6100 },
+      { layer:"comp",  label:"COMPLIANCE",  msg:"Escalation created for 2 flagged invoices ✓",       delay:6500 },
+      { layer:"audit", label:"AUDIT",       msg:"Sealing reconciliation log · 12 events...",          delay:7100 },
+      { layer:"audit", label:"AUDIT",       msg:"Audit hash: d2f19c85bb62...a7c3 · Immutable",        delay:7700, final:true },
+    ],
+    result: { actions:12, time:"7.7s", saved:"7.8h", cost:"$0.96",
+      hash:"d2f19c85bb62a7c3...e0f4", pipeStages:[0,1,2,3,4] }
+  }
+];
+
+let selectedScenario = 0;
+let running = false;
+let timeouts = [];
+
+function selectScenario(id) {
+  if (running) return;
+  selectedScenario = id;
+  document.querySelectorAll('.demo-scenario').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.demo-scenario[data-id="${id}"]`).classList.add('active');
+}
+
+function setStatus(label, color) {
+  document.getElementById('demo-status-dot').style.background = color;
+  document.getElementById('demo-status-label').style.color = color === '#c8ff00' ? '#c8ff00' : 'var(--dim)';
+  document.getElementById('demo-status-label').textContent = label;
+}
+
+function resetPipeline() {
+  for (let i = 0; i < 5; i++) {
+    const s = document.getElementById('pipe-' + i);
+    s.className = 'pipe-stage';
+  }
+  for (let i = 0; i < 4; i++) {
+    const l = document.getElementById('pline-' + i);
+    l.className = 'pipe-line';
+  }
+}
+
+const LAYER_PIPE = { id:0, scope:1, exec:2, comp:3, audit:4 };
+let lastPipeStage = -1;
+
+function activatePipeStage(stageIdx) {
+  if (stageIdx === lastPipeStage) return;
+  // Mark previous done
+  if (lastPipeStage >= 0) {
+    document.getElementById('pipe-' + lastPipeStage).className = 'pipe-stage done';
+  }
+  // Scan the line between
+  if (lastPipeStage >= 0 && stageIdx > 0) {
+    const lineIdx = stageIdx - 1;
+    const line = document.getElementById('pline-' + lineIdx);
+    line.className = 'pipe-line scanning';
+    setTimeout(() => { line.className = 'pipe-line lit'; }, 600);
+  }
+  document.getElementById('pipe-' + stageIdx).className = 'pipe-stage running';
+  lastPipeStage = stageIdx;
+}
+
+function addLog(step) {
+  const log = document.getElementById('demo-log');
+  const now = new Date();
+  const ts = now.getMinutes().toString().padStart(2,'0') + ':' +
+             now.getSeconds().toString().padStart(2,'0') + '.' +
+             Math.floor(Math.random()*900+100);
+
+  const line = document.createElement('div');
+  line.className = 'log-line';
+
+  let msgClass = step.highlight ? 'log-ok' : step.warn ? 'log-warn' : step.final ? 'log-ok' : 'log-msg';
+  let suffix = step.highlight ? ' ✓' : step.warn ? ' ⚠' : step.final ? '' : '';
+
+  line.innerHTML = `
+    <span class="log-time">${ts}</span>
+    <span class="log-layer ${step.layer}">${step.label}</span>
+    <span class="${msgClass}">${step.msg}${suffix}</span>
+  `;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+function runDemo() {
+  if (running) return;
+  running = true;
+
+  document.getElementById('run-btn').style.display = 'none';
+  document.getElementById('result-card').style.display = 'none';
+  document.getElementById('demo-log').innerHTML = '';
+  resetPipeline();
+  lastPipeStage = -1;
+
+  setStatus('Running', '#c8ff00');
+
+  const scenario = SCENARIOS[selectedScenario];
+
+  scenario.steps.forEach((step, i) => {
+    const t = setTimeout(() => {
+      activatePipeStage(LAYER_PIPE[step.layer]);
+      addLog(step);
+
+      if (step.final) {
+        // Final stage: seal pipeline
+        setTimeout(() => {
+          document.getElementById('pipe-4').className = 'pipe-stage done';
+          setStatus('Complete', '#c8ff00');
+          showResult(scenario.result);
+          running = false;
+          document.getElementById('reset-btn').style.display = 'block';
+        }, 600);
+      }
+    }, step.delay);
+    timeouts.push(t);
+  });
+}
+
+function showResult(r) {
+  const card = document.getElementById('result-card');
+  card.style.display = 'block';
+
+  document.getElementById('result-stats').innerHTML = `
+    <div class="result-stat">
+      <div class="result-stat-num">${r.actions}<span>×</span></div>
+      <div class="result-stat-label">Actions executed</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-num">${r.time}</div>
+      <div class="result-stat-label">Total runtime</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-num">${r.saved}</div>
+      <div class="result-stat-label">Human hours saved</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-num">${r.cost}</div>
+      <div class="result-stat-label">Execution cost</div>
+    </div>
+  `;
+
+  const hash = 'axn_' + Math.random().toString(36).slice(2,10) + '...' + Math.random().toString(36).slice(2,6);
+  document.getElementById('audit-hash').textContent = hash;
+  document.getElementById('audit-time').textContent = new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC';
+}
+
+function resetDemo() {
+  timeouts.forEach(clearTimeout);
+  timeouts = [];
+  running = false;
+  lastPipeStage = -1;
+  resetPipeline();
+  setStatus('Idle', '#444');
+  document.getElementById('demo-log').innerHTML = '<div style="font-size:13px;color:var(--dim);font-style:italic;">Select a scenario and press Run Agent to begin execution...</div>';
+  document.getElementById('result-card').style.display = 'none';
+  document.getElementById('run-btn').style.display = 'block';
+  document.getElementById('reset-btn').style.display = 'none';
+}
+</script>
 
 <!-- CTA -->
 <section class="cta-section">
