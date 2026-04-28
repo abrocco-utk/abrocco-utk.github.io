@@ -783,6 +783,118 @@
     transform: translateY(-2px);
   }
 
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2,2,2,0.88);
+    backdrop-filter: blur(14px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 48px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    transform: translateY(24px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.34,1.3,0.64,1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--dim);
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+  .modal-close:hover { border-color: var(--border-light); color: var(--white); background: var(--surface2); }
+  .modal-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800; color: var(--white);
+    line-height: 1.1; margin-bottom: 8px;
+  }
+  .modal-sub {
+    font-size: 14px; color: var(--dim); font-weight: 300;
+    line-height: 1.6; margin-bottom: 32px;
+  }
+  .modal-field { margin-bottom: 16px; }
+  .modal-label {
+    display: block;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dim); margin-bottom: 7px;
+  }
+  .modal-input {
+    width: 100%;
+    background: var(--black);
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+    padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 400; color: var(--white);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .modal-input::placeholder { color: #3a3a38; }
+  .modal-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,255,0,0.07); }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .modal-divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .modal-submit {
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--accent); color: var(--black);
+    padding: 15px; border: none; border-radius: 2px;
+    cursor: pointer; transition: all 0.2s; margin-bottom: 14px;
+  }
+  .modal-submit:hover { background: #d4ff26; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,255,0,0.2); }
+  .modal-fine { font-size: 11px; color: var(--dim); font-weight: 300; text-align: center; line-height: 1.6; }
+  .modal-fine span { color: rgba(200,255,0,0.7); }
+  /* success */
+  .modal-success {
+    display: none; flex-direction: column;
+    align-items: center; text-align: center; padding: 16px 0;
+  }
+  .modal-success.show { display: flex; }
+  .modal-form.hide { display: none; }
+  .success-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 1px solid var(--accent);
+    background: rgba(200,255,0,0.06);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    animation: successPop 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  @keyframes successPop { from{transform:scale(0.4);opacity:0} to{transform:scale(1);opacity:1} }
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800; color: var(--white); margin-bottom: 10px;
+  }
+  .success-msg { font-size: 14px; color: var(--dim); font-weight: 300; line-height: 1.7; max-width: 280px; }
+  .success-msg span { color: var(--accent); }
+
   /* Footer */
   footer {
     background: var(--surface);
@@ -921,7 +1033,7 @@
     <li><a href="#why">Why Now</a></li>
     <li><a href="#demo" style="color:var(--accent)">Live Demo</a></li>
   </ul>
-  <button class="nav-cta">Request Access</button>
+  <button class="nav-cta" onclick="openModal()">Request Access</button>
 </nav>
 
 <!-- HERO -->
@@ -941,7 +1053,7 @@
   </p>
 
   <div class="hero-actions">
-    <button class="btn-primary">Get Early Access</button>
+    <button class="btn-primary" onclick="openModal()">Get Early Access</button>
     <button class="btn-ghost">
       See architecture
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1835,7 +1947,7 @@ function resetDemo() {
   <h2 class="section-headline reveal">The agentic economy<br>needs infrastructure.<br><span style="color:var(--accent)">Build on ours.</span></h2>
   <p class="section-sub reveal">AXON is in private beta with design partners. We're accepting 12 enterprise teams and 50 developers for early access starting Q1 2025.</p>
   <div class="cta-actions reveal">
-    <button class="btn-primary">Apply for Enterprise Beta</button>
+    <button class="btn-primary" onclick="openModal()">Apply for Enterprise Beta</button>
     <button class="btn-secondary">Developer API Docs</button>
   </div>
 </section>
@@ -1916,6 +2028,137 @@ function resetDemo() {
       ? 'rgba(2,2,2,0.92)'
       : 'rgba(2,2,2,0.6)';
   });
+</script>
+<!-- ── REQUEST ACCESS MODAL ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+
+    <button class="modal-close" onclick="closeModal()" title="Close">&#x2715;</button>
+
+    <!-- Form state -->
+    <div class="modal-form" id="modal-form">
+      <div class="modal-tag">Early Access · Limited Spots</div>
+      <h2 class="modal-title">Request access<br>to AXON.</h2>
+      <p class="modal-sub">Join 60+ enterprise teams and developers already on the waitlist. We'll reach out within 48 hours.</p>
+
+      <div class="modal-row">
+        <div class="modal-field">
+          <label class="modal-label" for="m-firstname">First name</label>
+          <input class="modal-input" id="m-firstname" type="text" placeholder="Jane" autocomplete="given-name"/>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="m-lastname">Last name</label>
+          <input class="modal-input" id="m-lastname" type="text" placeholder="Smith" autocomplete="family-name"/>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label" for="m-email">Work email</label>
+        <input class="modal-input" id="m-email" type="email" placeholder="jane@company.com" autocomplete="email"/>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label" for="m-company">Company</label>
+        <input class="modal-input" id="m-company" type="text" placeholder="Acme Corp" autocomplete="organization"/>
+      </div>
+
+      <div class="modal-row">
+        <div class="modal-field">
+          <label class="modal-label" for="m-role">Role</label>
+          <input class="modal-input" id="m-role" type="text" placeholder="CTO / VP Eng"/>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="m-size">Team size</label>
+          <select class="modal-input" id="m-size" style="appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%238a8680' stroke-width='1.5'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;">
+            <option value="" disabled selected style="background:#0d0d0b;">Select...</option>
+            <option style="background:#0d0d0b;">1–10</option>
+            <option style="background:#0d0d0b;">11–50</option>
+            <option style="background:#0d0d0b;">51–200</option>
+            <option style="background:#0d0d0b;">201–1000</option>
+            <option style="background:#0d0d0b;">1000+</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-divider"></div>
+
+      <div class="modal-field">
+        <label class="modal-label" for="m-password">Create a password</label>
+        <input class="modal-input" id="m-password" type="password" placeholder="Min. 8 characters" autocomplete="new-password"/>
+      </div>
+
+      <div class="modal-field" style="margin-bottom:28px;">
+        <label class="modal-label" for="m-password2">Confirm password</label>
+        <input class="modal-input" id="m-password2" type="password" placeholder="Repeat password" autocomplete="new-password"/>
+        <div id="pw-error" style="display:none;font-size:12px;color:#ff5f57;margin-top:6px;">Passwords do not match.</div>
+      </div>
+
+      <button class="modal-submit" onclick="submitModal()">Request Access &nbsp;→</button>
+      <p class="modal-fine">By submitting you agree to our <span>Terms of Service</span> and <span>Privacy Policy</span>. No spam, ever.</p>
+    </div>
+
+    <!-- Success state -->
+    <div class="modal-success" id="modal-success">
+      <div class="success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c8ff00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div class="success-title">You're on the list.</div>
+      <p class="success-msg">We'll be in touch at <span id="confirm-email"></span> within 48 hours with your access details.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('m-firstname').focus(), 350);
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  function submitModal() {
+    const email = document.getElementById('m-email').value.trim();
+    const pw1   = document.getElementById('m-password').value;
+    const pw2   = document.getElementById('m-password2').value;
+    const pwErr = document.getElementById('pw-error');
+
+    // Basic validation
+    if (!email || !document.getElementById('m-firstname').value.trim()) {
+      document.getElementById('m-firstname').focus();
+      document.getElementById('m-firstname').style.borderColor = '#ff5f57';
+      setTimeout(() => document.getElementById('m-firstname').style.borderColor = '', 2000);
+      return;
+    }
+    if (pw1.length < 8) {
+      document.getElementById('m-password').focus();
+      document.getElementById('m-password').style.borderColor = '#ff5f57';
+      setTimeout(() => document.getElementById('m-password').style.borderColor = '', 2000);
+      return;
+    }
+    if (pw1 !== pw2) {
+      pwErr.style.display = 'block';
+      document.getElementById('m-password2').style.borderColor = '#ff5f57';
+      return;
+    }
+    pwErr.style.display = 'none';
+
+    // Show success
+    document.getElementById('confirm-email').textContent = email;
+    document.getElementById('modal-form').classList.add('hide');
+    document.getElementById('modal-success').classList.add('show');
+  }
 </script>
 </body>
 </html>
